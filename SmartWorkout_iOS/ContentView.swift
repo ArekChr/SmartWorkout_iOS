@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct ContentView: View {
     @State private var selection = 1
@@ -36,6 +37,9 @@ struct ContentView: View {
 }
 
 struct TrainingStack: View {
+    
+    @State private var exercises: [Exercise] = []
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -45,14 +49,13 @@ struct TrainingStack: View {
                        Text("Wczoraj")
                        Spacer()
                     }.padding(EdgeInsets(top: 5, leading: 10, bottom: 0, trailing: 10))
-                    ExerciseItem(exerciseName: "Wyciskanie na ławce płaskiej.")
-                    ExerciseItem(exerciseName: "Wiosłowanie sztangi w opadzie tułowia")
-                    ExerciseItem(exerciseName: "Podciąganie podchwytem")
-                    ExerciseItem(exerciseName: "Wyciskanie francuskie")
-                    ExerciseItem(exerciseName: "Rozpiętki na ławce płaskiej")
-                    
+                    ForEach(exercises, id: \.self.id) { ex in
+                        ExerciseItem(sets: ex.sets, exerciseName: ex.name, onAddSet: ex.addNewSet)
+                    }
                     HStack {
-                       Button(action: {}) {
+                       Button(action: {
+                            self.exercises.append(Exercise(id: "123", sequence: 1, name: "test test"))
+                       }) {
                            Text("Dodaj Ćwiczenie").accentColor(Color.orange)
                        }.padding(EdgeInsets(top: 5, leading: 0,bottom: 0,trailing: 0 ))
                        Spacer()
@@ -77,12 +80,11 @@ struct TrainingStack: View {
 
 
 struct ExerciseItem: View {
+    
+    @State var sets: [ExerciseSet]
     var exerciseName: String
-    var sets: Array<Exercises> = []
-
-    func onAddSetPress(){
-        
-    }
+    
+    var onAddSet: () -> Void
     
     var body: some View {
         VStack {
@@ -92,9 +94,13 @@ struct ExerciseItem: View {
                 ElipsisButton(action: {})
             }
             SetHeader()
-            SetRow(setSequence: 1, onAddSetPress: self.onAddSetPress)
+            ForEach(sets, id: \.self.sequence) { set in
+                SetRow(setSequence: set.sequence)
+            }
             HStack {
-                Button(action: {}) {
+                Button(action: {
+                    self.sets.append(ExerciseSet(sequence: 1))
+                }) {
                     Text("Dodaj Serie").accentColor(Color.orange)
                 }
                 Spacer()
@@ -130,10 +136,8 @@ struct SetRow: View {
     var goal: ExerciseResults?
     var acheivement: ExerciseResults?
     
-    var onAddSetPress: () -> Void
-    
     var oneRepMax: Float {
-        return calcRepMax(weight: acheivement?.weight ?? 0, reps: acheivement?.repetitions ?? 0)
+        return Patterns.calcRepMax(weight: acheivement?.weight ?? 0, reps: acheivement?.repetitions ?? 0)
     }
     
     var volume: Int {
@@ -170,26 +174,54 @@ struct ElipsisButton: View {
     }
 }
 
-func calcRepMax(weight: Float, reps: Int) -> Float {
-    if(weight == 0 || reps == 0){
-        return 0
+class Workout {
+    var notes: String?
+    var name: String?
+    var startDate: Date?
+    var durationInMinutes: Double?
+    var exercises: [Exercise]?
+    
+    init(notes: String? = nil, name: String? = nil, exercises: [Exercise]? = [], startDate: Date? = nil, durationInMinutes: Double? = nil) {
+        self.notes = notes
+        self.name = name
+        self.exercises = exercises!
+        self.startDate = startDate
+        self.durationInMinutes = durationInMinutes
     }
-    
-    let freps = Float(reps)
-    
-    let lomonerm = weight * pow(freps, 1 / 10);
-    let brzonerm = weight * (36 / (37 - freps));
-    let eplonerm = weight * (1 + freps / 30);
-    let mayonerm = (weight * 100) / (52.2 + 41.9 * exp(-1 * (freps * 0.055)));
-    let ocoonerm = weight * (1 + freps * 0.025);
-    let watonerm = (weight * 100) / (48.8 + 53.8 * exp(-1 * (freps * 0.075)));
-    let lanonerm = (weight * 100) / (101.3 - 2.67123 * freps);
-
-    return (lomonerm + brzonerm + eplonerm + mayonerm + ocoonerm + watonerm + lanonerm) / 7.0
 }
 
-class Exercises {
+class Exercise: Identifiable {
+    var id: String
+    var sequence: Int
+    var name: String
+    var isVerified: Bool
+    var sets: [ExerciseSet] = []
     
+    init(id: String, sequence: Int, name: String, isVerified: Bool? = false){
+        self.id = id
+        self.sequence = sequence
+        self.name = name
+        self.isVerified = isVerified!
+    }
+    
+    func addNewSet(){
+        print("added new set, sets length: \(String(describing: self.sets.count))")
+        self.sets.append(
+            ExerciseSet(sequence: self.sequence + 1, goal: ExerciseResults(), acheived: ExerciseResults())
+        )
+    }
+}
+
+class ExerciseSet {
+    var sequence: Int
+    var goal: ExerciseResults?
+    var acheived: ExerciseResults?
+    
+    init(sequence: Int, goal: ExerciseResults? = nil, acheived: ExerciseResults? = nil){
+        self.sequence = sequence
+        self.goal = goal
+        self.acheived = acheived
+    }
 }
 
 struct ExerciseResults {
@@ -197,8 +229,10 @@ struct ExerciseResults {
     var repetitions: Int?
 }
 
+#if DEBUG
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView().previewDevice("iPhone Xs")
     }
 }
+#endif

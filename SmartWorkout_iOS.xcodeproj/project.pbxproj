@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2BA40618245C51FF00AD4A18 /* Patterns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA40617245C51FF00AD4A18 /* Patterns.swift */; };
 		2BBE7BB0245C2BFA00A4A1A9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BBE7BAF245C2BFA00A4A1A9 /* AppDelegate.swift */; };
 		2BBE7BB2245C2BFA00A4A1A9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BBE7BB1245C2BFA00A4A1A9 /* SceneDelegate.swift */; };
 		2BBE7BB4245C2BFA00A4A1A9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BBE7BB3245C2BFA00A4A1A9 /* ContentView.swift */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2BA40617245C51FF00AD4A18 /* Patterns.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patterns.swift; sourceTree = "<group>"; };
 		2BBE7BAC245C2BFA00A4A1A9 /* SmartWorkout_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartWorkout_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2BBE7BAF245C2BFA00A4A1A9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2BBE7BB1245C2BFA00A4A1A9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -37,6 +39,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2BA40616245C51D800AD4A18 /* Patterns */ = {
+			isa = PBXGroup;
+			children = (
+				2BA40617245C51FF00AD4A18 /* Patterns.swift */,
+			);
+			path = Patterns;
+			sourceTree = "<group>";
+		};
 		2BBE7BA3245C2BFA00A4A1A9 = {
 			isa = PBXGroup;
 			children = (
@@ -56,6 +66,7 @@
 		2BBE7BAE245C2BFA00A4A1A9 /* SmartWorkout_iOS */ = {
 			isa = PBXGroup;
 			children = (
+				2BA40616245C51D800AD4A18 /* Patterns */,
 				2BBE7BAF245C2BFA00A4A1A9 /* AppDelegate.swift */,
 				2BBE7BB1245C2BFA00A4A1A9 /* SceneDelegate.swift */,
 				2BBE7BB3245C2BFA00A4A1A9 /* ContentView.swift */,
@@ -148,6 +159,7 @@
 			files = (
 				2BBE7BB0245C2BFA00A4A1A9 /* AppDelegate.swift in Sources */,
 				2BBE7BB2245C2BFA00A4A1A9 /* SceneDelegate.swift in Sources */,
+				2BA40618245C51FF00AD4A18 /* Patterns.swift in Sources */,
 				2BBE7BB4245C2BFA00A4A1A9 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
