@@ -18,27 +18,59 @@ struct ContentView: View {
             Text("Second View")
                 .font(.title)
                 .tabItem {
-                    VStack {
-                        Image(systemName: "person")
-                        Text("Second")
+                    if(selection == 0){
+                        Image(systemName: "person.fill").font(.system(size: 25))
+                    } else {
+                        Image(systemName: "person").font(.system(size: 25))
                     }
                 }
                 .tag(0)
             TrainingStack()
                 .tabItem {
-                    VStack {
-                        Image("first")
-                        Text("First")
+                    if(selection == 1){
+                        Image(systemName: "flame.fill").font(.system(size: 25))
+                    } else {
+                        Image(systemName: "flame").font(.system(size: 25))
                     }
                 }
                 .tag(1)
+            Text("Tortoise")
+                .font(.title)
+                .tabItem {
+                    if(selection == 2){
+                        Image(systemName: "tortoise.fill").font(.system(size: 25))
+                    } else {
+                        Image(systemName: "tortoise").font(.system(size: 25))
+                    }
+                }
+                .tag(2)
+            Text("Ant")
+                .font(.title)
+                .tabItem {
+                    if(selection == 3){
+                        Image(systemName: "ant.fill").font(.system(size: 25))
+                    } else {
+                        Image(systemName: "ant").font(.system(size: 25))
+                    }
+                }
+                .tag(3)
+            Text("Bolt")
+                 .font(.title)
+                 .tabItem {
+                     if(selection == 4){
+                         Image(systemName: "bolt.circle.fill").font(.system(size: 25))
+                     } else {
+                         Image(systemName: "bolt.circle").font(.system(size: 25))
+                     }
+                 }
+                 .tag(4)
         }
     }
 }
 
 struct TrainingStack: View {
     
-    @State private var exercises: [Exercise] = []
+    @State private var exercises: [Exercise] = [Exercise(id: "1", sequence: 1, name: "Cwiczenie 1")]
     
     var body: some View {
         NavigationView {
@@ -114,17 +146,19 @@ struct SetHeader: View {
     var body: some View {
         VStack {
             HStack() {
-                Text("SERIA")
-                Spacer()
-                Text("CEL")
-                Spacer()
-                Text("OSIĄGNIĘCIA")
-                Spacer()
-                Text("1RM")
-                Spacer()
-                Text("OBJĘTOŚĆ")
-                ElipsisButton(action: {})
+                HStack() {
+                    Text("SERIA")
+                    Spacer()
+                    Text("CEL")
+                    Spacer()
+                    Text("OSIĄGNIĘCIA")
+                    Spacer()
+                    Text("1RM")
+                    Spacer()
+                    Text("OBJĘTOŚĆ")
+                }.font(.system(size: 15)).foregroundColor(Color.gray)
                 
+                ElipsisButton(action: {})
             }
             Divider()
 
@@ -133,6 +167,7 @@ struct SetHeader: View {
 }
 
 struct SetRow: View {
+    @State private var showingSheet = false
     var setSequence: Int
     var goal: ExerciseResults?
     var acheivement: ExerciseResults?
@@ -159,9 +194,14 @@ struct SetRow: View {
                 Text(String(oneRepMax))
                 Spacer()
                 Text(String(volume))
-                ElipsisButton(action: {})
+                ElipsisButton(action: {
+                    self.showingSheet = true
+                })
             }
             Divider()
+                .actionSheet(isPresented: $showingSheet) {
+                ActionSheet(title: Text("What do you want to do?"), message: Text("There's only one choice..."), buttons: [.default(Text("Dismiss Action Sheet"))])
+            }
         }
     }
 }
