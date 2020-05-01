@@ -49,12 +49,13 @@ struct TrainingStack: View {
                        Text("Wczoraj")
                        Spacer()
                     }.padding(EdgeInsets(top: 5, leading: 10, bottom: 0, trailing: 10))
-                    ForEach(exercises, id: \.self.id) { ex in
+                    ForEach(exercises, id: \.self.sequence) { ex in
                         ExerciseItem(sets: ex.sets, exerciseName: ex.name, onAddSet: ex.addNewSet)
                     }
                     HStack {
                        Button(action: {
-                            self.exercises.append(Exercise(id: "123", sequence: 1, name: "test test"))
+                        self.exercises.append(
+                            Exercise(id: "123", sequence: (self.exercises.last?.sequence != nil) ? self.exercises.last!.sequence + 1 : 1, name: "test test"))
                        }) {
                            Text("Dodaj Ćwiczenie").accentColor(Color.orange)
                        }.padding(EdgeInsets(top: 5, leading: 0,bottom: 0,trailing: 0 ))
@@ -99,7 +100,7 @@ struct ExerciseItem: View {
             }
             HStack {
                 Button(action: {
-                    self.sets.append(ExerciseSet(sequence: 1))
+                    self.sets.append(ExerciseSet(sequence: (self.sets.last != nil) ? self.sets.last!.sequence + 1 : 1))
                 }) {
                     Text("Dodaj Serie").accentColor(Color.orange)
                 }
@@ -195,7 +196,7 @@ class Exercise: Identifiable {
     var sequence: Int
     var name: String
     var isVerified: Bool
-    var sets: [ExerciseSet] = []
+    var sets: [ExerciseSet] = [ExerciseSet(sequence: 1)]
     
     init(id: String, sequence: Int, name: String, isVerified: Bool? = false){
         self.id = id
