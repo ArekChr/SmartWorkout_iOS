@@ -18,7 +18,7 @@ struct ContentView: View {
                 .font(.title)
                 .tabItem {
                     VStack {
-                        Image("second")
+                        Image(systemName: "person")
                         Text("Second")
                     }
                 }
@@ -44,42 +44,55 @@ struct TrainingStack: View {
                        Text("Data Rozpoczęcia:")
                        Text("Wczoraj")
                        Spacer()
+                    }.padding(EdgeInsets(top: 5, leading: 10, bottom: 0, trailing: 10))
+                    ExerciseItem(exerciseName: "Wyciskanie na ławce płaskiej.")
+                    ExerciseItem(exerciseName: "Wiosłowanie sztangi w opadzie tułowia")
+                    ExerciseItem(exerciseName: "Podciąganie podchwytem")
+                    ExerciseItem(exerciseName: "Wyciskanie francuskie")
+                    ExerciseItem(exerciseName: "Rozpiętki na ławce płaskiej")
+                    
+                    HStack {
+                       Button(action: {}) {
+                           Text("Dodaj Ćwiczenie").accentColor(Color.orange)
+                       }.padding(EdgeInsets(top: 5, leading: 0,bottom: 0,trailing: 0 ))
+                       Spacer()
+                   }
+                }
+                }
+            .navigationBarTitle("Mój Trening", displayMode: .large)
+            .navigationBarItems(
+            trailing:
+                HStack {
+                    Button(action: {}) {
+                        Image(systemName: "ellipsis").accentColor(Color.blue)
                     }
-                    ExerciseItem()
-                    Spacer()
+                    Button(action: {}) {
+                        Text("Zakończ")
                     }
                 }
-                .navigationBarTitle("Mój Trening", displayMode: .large)
-                .navigationBarItems(
-                trailing:
-                    HStack {
-                        Button(action: {}) {
-                            Image(systemName: "ellipsis").accentColor(Color.blue)
-                        }
-                        Button(action: {}) {
-                            Text("Zakończ")
-                        }
-                    }
-                )
-            }
+            )
+        }
     }
 }
 
 
 struct ExerciseItem: View {
+    var exerciseName: String
+    var sets: Array<Exercises> = []
+
+    func onAddSetPress(){
+        
+    }
+    
     var body: some View {
         VStack {
             HStack() {
-                Text("Wyciskanie Sztangi Na Ławce Płaskiej")
+                Text(exerciseName)
                 Spacer()
-                Button(action: {
-                    print(":D")
-                }) {
-                    Image(systemName: "ellipsis").accentColor(Color.orange)
-                }
+                ElipsisButton(action: {})
             }
             SetHeader()
-            SetRow(setSequence: 1)
+            SetRow(setSequence: 1, onAddSetPress: self.onAddSetPress)
             HStack {
                 Button(action: {}) {
                     Text("Dodaj Serie").accentColor(Color.orange)
@@ -103,9 +116,7 @@ struct SetHeader: View {
                 Text("1RM")
                 Spacer()
                 Text("OBJĘTOŚĆ")
-                Button(action: {}) {
-                    Image(systemName: "ellipsis").accentColor(Color.orange)
-                }
+                ElipsisButton(action: {})
                 
             }
             Divider()
@@ -118,6 +129,18 @@ struct SetRow: View {
     var setSequence: Int
     var goal: ExerciseResults?
     var acheivement: ExerciseResults?
+    
+    var onAddSetPress: () -> Void
+    
+    var oneRepMax: Float {
+        return calcRepMax(weight: acheivement?.weight ?? 0, reps: acheivement?.repetitions ?? 0)
+    }
+    
+    var volume: Int {
+        get {
+            return Int(acheivement?.weight ?? 0) * Int(acheivement?.repetitions ?? 0)
+        }
+    }
 
     var body: some View {
         VStack {
@@ -128,22 +151,50 @@ struct SetRow: View {
                 Spacer()
                 Text(acheivement != nil ? "\(acheivement?.weight ?? 0) x \(acheivement?.repetitions ?? 0)" : "kg x powt")
                 Spacer()
-                Text("0")
+                Text(String(oneRepMax))
                 Spacer()
-                Text("0")
-                Button(action: {}) {
-                    Image(systemName: "ellipsis").accentColor(Color.orange)
-                }
+                Text(String(volume))
+                ElipsisButton(action: {})
             }
             Divider()
         }
     }
 }
 
-struct ExerciseResults {
-    var weight: Int?
-    var repetitions: Int?
+struct ElipsisButton: View {
+    var action: () -> Void
+    var body: some View {
+        Button(action: self.action) {
+            Image(systemName: "ellipsis").accentColor(Color.orange)
+        }.padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+    }
+}
+
+func calcRepMax(weight: Float, reps: Int) -> Float {
+    if(weight == 0 || reps == 0){
+        return 0
+    }
     
+    let freps = Float(reps)
+    
+    let lomonerm = weight * pow(freps, 1 / 10);
+    let brzonerm = weight * (36 / (37 - freps));
+    let eplonerm = weight * (1 + freps / 30);
+    let mayonerm = (weight * 100) / (52.2 + 41.9 * exp(-1 * (freps * 0.055)));
+    let ocoonerm = weight * (1 + freps * 0.025);
+    let watonerm = (weight * 100) / (48.8 + 53.8 * exp(-1 * (freps * 0.075)));
+    let lanonerm = (weight * 100) / (101.3 - 2.67123 * freps);
+
+    return (lomonerm + brzonerm + eplonerm + mayonerm + ocoonerm + watonerm + lanonerm) / 7.0
+}
+
+class Exercises {
+    
+}
+
+struct ExerciseResults {
+    var weight: Float?
+    var repetitions: Int?
 }
 
 struct ContentView_Previews: PreviewProvider {
